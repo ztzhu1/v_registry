@@ -6,14 +6,11 @@ tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, .05);
 }
 
-tbody tr.v-data-table__selected {
-    background: #f5c17d70 !important;
+.selected-row {
+    background-color: #ffd296d2 !important;
+    user-select: none
 }
 
-tbody tr.v-data-table__selected:hover {
-    background: #ffd296d2 !important;
-}
-
-.spacer {
-    margin-top: 3em;
+.unselected-row {
+    user-select: none
 }
