@@ -1,6 +1,6 @@
 <script setup>
 import { useTheme } from "vuetify";
-import { ref, onMounted } from "vue";
+import { ref, shallowRef, onMounted } from "vue";
 
 const theme = useTheme();
 let vimMode = "normal";
@@ -33,7 +33,11 @@ function isDark() {
 }
 
 const items = ref([]);
-const id_index_map = {};
+const idIndexMap = {};
+const dialog = shallowRef(false);
+const dialogText = ref(null);
+const dialogItem = ref(null);
+
 for (let i = 0; i < 20; i++) {
   let item = {
     key: `key${i}`,
@@ -42,7 +46,6 @@ for (let i = 0; i < 20; i++) {
     type: "key",
   };
   items.value.push(item);
-  id_index_map[item["id"]] = i;
 }
 const headers = [
   { title: "key", key: "key", align: "center" },
@@ -60,8 +63,8 @@ function rowClick(event, row) {
     if (selected.value.length == 0) {
       selected.value.push(row.internalItem.key);
     } else {
-      let formerIndex = id_index_map[selected.value[selected.value.length - 1]];
-      let currIndex = id_index_map[row.internalItem.key];
+      let formerIndex = idIndexMap[selected.value[selected.value.length - 1]];
+      let currIndex = idIndexMap[row.internalItem.key];
       if (formerIndex > currIndex) {
         [formerIndex, currIndex] = [currIndex, formerIndex];
       }
@@ -78,7 +81,21 @@ function rowDoubleClick(event, row) {
   if (event.detail != 2) {
     return;
   }
-  console.log("double", selected.value[selected.value.length - 1]);
+  dialogItem.value = row.internalItem;
+  dialog.value = true;
+}
+
+function closeClick() {
+  dialogText.value = null;
+  dialogItem.value = null;
+  dialog.value = false;
+}
+
+function saveClick() {
+  console.log(dialogText.value, dialogItem.value);
+  dialogText.value = null;
+  dialogItem.value = null;
+  dialog.value = false;
 }
 
 function getColor(value) {
@@ -173,6 +190,22 @@ function colorRowItem(item) {
         </v-data-table>
       </v-row>
     </v-card>
+
+    <v-dialog v-model="dialog">
+      <v-card prepend-icon="mdi-pen" title="New value">
+        <v-card-text
+          ><v-text-field label="new value" v-model="dialogText"></v-text-field
+        ></v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text="Close" variant="plain" @click="closeClick"></v-btn>
+          <v-btn color="primary" text="Save" variant="tonal" @click="saveClick"></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-main>
 </template>
 
