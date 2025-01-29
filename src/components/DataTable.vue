@@ -1,29 +1,45 @@
 <script setup>
 import { useTheme } from "vuetify";
 import { ref, shallowRef, onMounted } from "vue";
+import { pathRef, pathFocus } from "../status";
 
 const theme = useTheme();
 let vimMode = "normal";
-let searchFocus = false;
+let searchFocus = ref(false);
 const search = ref("");
 const selected = ref([]);
-const searchRef = ref();
+let searchRef = ref();
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
     if (event.code == "Escape" || (event.code == "BracketLeft" && event.ctrlKey)) {
       selected.value = [];
-      if (searchFocus) {
+      if (searchFocus.value) {
         searchRef.value.blur();
       }
+      if (pathFocus.value) {
+        pathRef.value.blur();
+      }
+      clearDialog();
       vimMode = "normal";
+    } else if (event.code == "Enter" && event.ctrlKey) {
+      if (dialog.value) {
+        saveClick();
+      }
     } else if (event.code == "KeyI" && vimMode != "insert") {
       vimMode = "insert";
     } else if (event.code == "KeyV" && vimMode == "normal") {
       vimMode = "visual";
     } else if ((event.code == "KeyF" && event.ctrlKey) || event.code == "Slash") {
-      event.preventDefault();
-      searchRef.value.focus();
+      if (event.code == "KeyF" && event.ctrlKey) {
+        event.preventDefault();
+      }
+      if (event.code == "Slash" && !searchFocus.value && !pathFocus.value) {
+        event.preventDefault();
+      }
+      if (!pathFocus.value) {
+        searchRef.value.focus();
+      }
     }
   });
 });
@@ -91,13 +107,15 @@ function rowDoubleClick(event, row) {
 }
 
 function closeClick() {
-  dialogText.value = null;
-  dialogItem.value = null;
-  dialog.value = false;
+  clearDialog();
 }
 
 function saveClick() {
   console.log(dialogText.value, dialogItem.value);
+  clearDialog();
+}
+
+function clearDialog() {
   dialogText.value = null;
   dialogItem.value = null;
   dialog.value = false;
@@ -169,6 +187,8 @@ function colorRowItem(item) {
           @dblclick:row="rowDoubleClick"
         >
           <template v-slot:[`item.key`]="{ value }">
+            <v-icon v-if="value == 'key'">mdi-folder</v-icon>
+            <v-icon v-else>mdi-key-variant</v-icon>
             <v-chip :color="getColor(value)" v-ripple variant="tonal">
               {{ value }}
             </v-chip>
@@ -196,15 +216,19 @@ function colorRowItem(item) {
       </v-row>
     </v-card>
 
-    <v-dialog v-model="dialog">
+    <v-dialog v-model="dialog" persistent>
       <v-card prepend-icon="mdi-pen" :title="dialogTitle">
         <v-card-title
-          ><v-text-field
+          ><v-textarea
             label="new value"
             variant="outlined"
             v-model="dialogText"
+            clear-icon="mdi-close-circle"
+            clearable
             autofocus
-          ></v-text-field
+            counter
+            auto-grow
+          ></v-textarea
         ></v-card-title>
 
         <v-divider></v-divider>
