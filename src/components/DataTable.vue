@@ -37,6 +37,7 @@ const idIndexMap = {};
 const dialog = shallowRef(false);
 const dialogText = ref(null);
 const dialogItem = ref(null);
+const dialogTitle = ref("");
 
 for (let i = 0; i < 20; i++) {
   let item = {
@@ -84,7 +85,8 @@ function rowDoubleClick(event, row) {
   }
   selected.value = [];
   dialogText.value = null;
-  dialogItem.value = row.internalItem;
+  dialogItem.value = row.internalItem.raw;
+  dialogTitle.value = row.internalItem.raw["key"];
   dialog.value = true;
 }
 
@@ -195,7 +197,7 @@ function colorRowItem(item) {
     </v-card>
 
     <v-dialog v-model="dialog">
-      <v-card prepend-icon="mdi-pen" title="New value">
+      <v-card prepend-icon="mdi-pen" :title="dialogTitle">
         <v-card-title
           ><v-text-field
             label="new value"
