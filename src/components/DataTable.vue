@@ -46,6 +46,7 @@ for (let i = 0; i < 20; i++) {
     type: "key",
   };
   items.value.push(item);
+  idIndexMap[items.value[items.value.length - 1]["id"]] = i;
 }
 const headers = [
   { title: "key", key: "key", align: "center" },
@@ -81,6 +82,8 @@ function rowDoubleClick(event, row) {
   if (event.detail != 2) {
     return;
   }
+  selected.value = [];
+  dialogText.value = null;
   dialogItem.value = row.internalItem;
   dialog.value = true;
 }
@@ -193,9 +196,14 @@ function colorRowItem(item) {
 
     <v-dialog v-model="dialog">
       <v-card prepend-icon="mdi-pen" title="New value">
-        <v-card-text
-          ><v-text-field label="new value" v-model="dialogText"></v-text-field
-        ></v-card-text>
+        <v-card-title
+          ><v-text-field
+            label="new value"
+            variant="outlined"
+            v-model="dialogText"
+            autofocus
+          ></v-text-field
+        ></v-card-title>
 
         <v-divider></v-divider>
 
