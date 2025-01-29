@@ -8,9 +8,34 @@ tbody tr:nth-of-type(odd) {
 
 .selected-row {
     background-color: #ffd296d2 !important;
-    user-select: none
+    user-select: none;
 }
 
 .unselected-row {
-    user-select: none
+    user-select: none;
+}
+
+.selected-row-dark {
+    background-color: #404859 !important;
+    user-select: none;
+}
+
+.unselected-row-dark {
+    user-select: none;
+}
+
+.rowValueChip {
+    max-width: 50vw;
+    white-space: nowrap;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rowValue {
+    max-width: 40vw;
+    white-space: nowrap;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

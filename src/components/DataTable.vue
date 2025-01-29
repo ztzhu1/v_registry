@@ -1,19 +1,48 @@
 <script setup>
-import { ref } from "vue";
-// import { shiftDown } from "../keyboard_events";
+import { useTheme } from "vuetify";
+import { ref, onMounted } from "vue";
 
+const theme = useTheme();
+let vimMode = "normal";
+let searchFocus = false;
+const search = ref("");
 const selected = ref([]);
+const searchRef = ref();
+
+onMounted(() => {
+  window.addEventListener("keydown", (event) => {
+    if (event.code == "Escape" || (event.code == "BracketLeft" && event.ctrlKey)) {
+      selected.value = [];
+      if (searchFocus) {
+        searchRef.value.blur();
+      }
+      vimMode = "normal";
+    } else if (event.code == "KeyI" && vimMode != "insert") {
+      vimMode = "insert";
+    } else if (event.code == "KeyV" && vimMode == "normal") {
+      vimMode = "visual";
+    } else if ((event.code == "KeyF" && event.ctrlKey) || event.code == "Slash") {
+      event.preventDefault();
+      searchRef.value.focus();
+    }
+  });
+});
+
+function isDark() {
+  return theme.global.current._value.dark;
+}
 
 const items = ref([]);
 const id_index_map = {};
 for (let i = 0; i < 20; i++) {
-  items.value.push({
+  let item = {
     key: `key${i}`,
     value: 100 * i,
     id: `id${i}`,
     type: "key",
-  });
-  id_index_map[items.value[items.value.length - 1]["id"]] = i;
+  };
+  items.value.push(item);
+  id_index_map[item["id"]] = i;
 }
 const headers = [
   { title: "key", key: "key", align: "center" },
@@ -52,48 +81,88 @@ function rowDoubleClick(event, row) {
   console.log("double", selected.value[selected.value.length - 1]);
 }
 
-function colorRowItem(item) {
-  if (selected.value.includes(item.item.id)) {
-    return { class: "selected-row" };
+function getColor(value) {
+  if (isDark()) {
+    return "#ffffff";
   }
-  return { class: "unselected-row" };
+  return "#000000";
 }
 
-function getColor(value) {
-  return "#000000";
+function customFilter(value, query, item) {
+  let key = item["raw"]["key"];
+  let pattern = query
+    .toLowerCase()
+    .split("")
+    .reduce(function (a, b) {
+      return a + ".*" + b;
+    });
+  let match = new RegExp(pattern).test(key.toLowerCase());
+  return value != null && query != null && typeof value === "string" && match;
+}
+
+function colorRowItem(item) {
+  let className = "";
+  if (selected.value.includes(item.item.id)) {
+    className = "selected-row";
+  } else {
+    className = "unselected-row";
+  }
+  if (isDark()) {
+    className = className.concat("-dark");
+  }
+  return { class: className };
 }
 </script>
 
 <template>
   <v-main>
-    <div class="spacer"></div>
-    <input type="text" @keydown="onPressShift" />
-    <v-row align="center" justify="center">
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        :items-per-page="-1"
-        :hover="true"
-        :row-props="colorRowItem"
-        hide-default-footer
-        v-model="selected"
-        disable-sort="true"
-        show-select
-        @click:row="rowClick"
-        @dblclick:row="rowDoubleClick"
-      >
-        <template v-slot:[`item.key`]="{ value }">
-          <v-chip :color="getColor(value)" v-ripple>
-            {{ value }}
-          </v-chip>
-        </template>
-        <template v-slot:[`item.value`]="{ value }">
-          <v-chip :color="getColor(value)" v-ripple>
-            {{ value }}
-          </v-chip>
-        </template>
+    <v-card>
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          placeholder="search"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          ref="searchRef"
+          @focus="searchFocus = true"
+          @blur="searchFocus = false"
+          single-line
+        ></v-text-field>
+      </v-card-title>
 
-        <!-- <template v-slot:item="{ item }">
+      <v-row align="center" justify="center">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="-1"
+          :hover="true"
+          :row-props="colorRowItem"
+          :search="search"
+          :custom-filter="customFilter"
+          hide-default-footer
+          v-model="selected"
+          disable-sort
+          show-select
+          @click:row="rowClick"
+          @dblclick:row="rowDoubleClick"
+        >
+          <template v-slot:[`item.key`]="{ value }">
+            <v-chip :color="getColor(value)" v-ripple variant="tonal">
+              {{ value }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.value`]="{ value }">
+            <v-chip
+              :color="getColor(value)"
+              v-ripple
+              variant="tonal"
+              class="rowValueChip"
+            >
+              <td class="rowValue">{{ value }}</td>
+            </v-chip>
+          </template>
+
+          <!-- <template v-slot:item="{ item }">
           <tr v-ripple :row-props="colorRowItem">
             <td align="center" justify="center">
               <v-chip :color="getColor(item.value)">{{ item.key }}</v-chip>
@@ -101,8 +170,9 @@ function getColor(value) {
             <td align="center" justify="center">{{ item.value }}</td>
           </tr>
         </template> -->
-      </v-data-table>
-    </v-row>
+        </v-data-table>
+      </v-row>
+    </v-card>
   </v-main>
 </template>
 

@@ -27,7 +27,6 @@ export default {
     ToolBar,
     DataTable,
   },
-
   data: () => ({}),
 };
 </script>
