@@ -86,7 +86,7 @@ function pathUpdate(event) {
         <v-btn icon @click="toggleTheme">
           <v-icon v-if="isDark()">mdi-brightness-4</v-icon>
           <v-icon v-else>mdi-brightness-5</v-icon>
-          <v-tooltip activator="parent">brightness/dark</v-tooltip>
+          <v-tooltip activator="parent">light/dark</v-tooltip>
         </v-btn>
 
         <v-btn icon>

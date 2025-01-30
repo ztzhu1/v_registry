@@ -56,12 +56,20 @@ const dialogItem = ref(null);
 const dialogTitle = ref("");
 
 for (let i = 0; i < 20; i++) {
+  let type = "";
+  if (i < 5) {
+    type = "folder";
+  } else {
+    type = "key";
+  }
   let item = {
-    key: `key${i}`,
+    key: `${type}.key${i}`,
     value: 100 * i,
     id: `id${i}`,
-    type: "key",
   };
+  if (i < 5) {
+    item["value"] = null;
+  }
   items.value.push(item);
   idIndexMap[items.value[items.value.length - 1]["id"]] = i;
 }
@@ -102,7 +110,7 @@ function rowDoubleClick(event, row) {
   selected.value = [];
   dialogText.value = null;
   dialogItem.value = row.internalItem.raw;
-  dialogTitle.value = row.internalItem.raw["key"];
+  dialogTitle.value = row.internalItem.raw["key"].split(".")[1];
   dialog.value = true;
 }
 
@@ -121,15 +129,32 @@ function clearDialog() {
   dialog.value = false;
 }
 
-function getColor(value) {
-  if (isDark()) {
-    return "#ffffff";
+function getColor(value, isKey) {
+  if (!isKey) {
+    if (isDark()) {
+      return "#ffffff";
+    }
+    return "#000000";
+  } else {
+    let type = "";
+    [type, value] = value.split(".");
+    if (type == "key") {
+      if (isDark()) {
+        return "#ffffff";
+      }
+      return "#000000";
+    } else {
+      if (isDark()) {
+        return "#ffffff";
+      }
+      return "#000000";
+    }
   }
-  return "#000000";
 }
 
 function customFilter(value, query, item) {
   let key = item["raw"]["key"];
+  key = key.split(".")[1];
   let pattern = query
     .toLowerCase()
     .split("")
@@ -160,7 +185,7 @@ function colorRowItem(item) {
       <v-card-title>
         <v-text-field
           v-model="search"
-          placeholder="search"
+          placeholder="search (Ctrl+F or /)"
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           ref="searchRef"
@@ -187,31 +212,25 @@ function colorRowItem(item) {
           @dblclick:row="rowDoubleClick"
         >
           <template v-slot:[`item.key`]="{ value }">
-            <v-icon v-if="value == 'key'">mdi-folder</v-icon>
+            <v-icon v-if="value.split('.')[0] == 'folder'" color="#dcb67a"
+              >mdi-folder</v-icon
+            >
             <v-icon v-else>mdi-key-variant</v-icon>
-            <v-chip :color="getColor(value)" v-ripple variant="tonal">
-              {{ value }}
+            <v-chip :color="getColor(value, true)" v-ripple variant="tonal">
+              {{ value.split(".")[1] }}
             </v-chip>
           </template>
           <template v-slot:[`item.value`]="{ value }">
             <v-chip
-              :color="getColor(value)"
+              :color="getColor(value, false)"
               v-ripple
               variant="tonal"
               class="rowValueChip"
+              v-if="value != null"
             >
               <td class="rowValue">{{ value }}</td>
             </v-chip>
           </template>
-
-          <!-- <template v-slot:item="{ item }">
-          <tr v-ripple :row-props="colorRowItem">
-            <td align="center" justify="center">
-              <v-chip :color="getColor(item.value)">{{ item.key }}</v-chip>
-            </td>
-            <td align="center" justify="center">{{ item.value }}</td>
-          </tr>
-        </template> -->
         </v-data-table>
       </v-row>
     </v-card>
@@ -235,8 +254,14 @@ function colorRowItem(item) {
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text="Close" variant="plain" @click="closeClick"></v-btn>
-          <v-btn color="primary" text="Save" variant="tonal" @click="saveClick"></v-btn>
+          <v-btn variant="plain" @click="closeClick">
+            <v-icon>mdi-close-circle-outline </v-icon
+            ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
+          >
+          <v-btn color="primary" variant="tonal" @click="saveClick">
+            <v-icon>mdi-content-save-edit-outline</v-icon
+            ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
