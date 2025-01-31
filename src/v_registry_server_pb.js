@@ -564,8 +564,8 @@ proto.protoblog.LsReply.prototype.toObject = function(opt_includeInstance) {
  */
 proto.protoblog.LsReply.toObject = function(includeInstance, msg) {
   var f, obj = {
-keysList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
-dirsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
+dirsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
+keysList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -604,11 +604,11 @@ proto.protoblog.LsReply.deserializeBinaryFromReader = function(msg, reader) {
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.addKeys(value);
+      msg.addDirs(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.addDirs(value);
+      msg.addKeys(value);
       break;
     default:
       reader.skipField();
@@ -639,14 +639,14 @@ proto.protoblog.LsReply.prototype.serializeBinary = function() {
  */
 proto.protoblog.LsReply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getKeysList();
+  f = message.getDirsList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       1,
       f
     );
   }
-  f = message.getDirsList();
+  f = message.getKeysList();
   if (f.length > 0) {
     writer.writeRepeatedString(
       2,
@@ -657,10 +657,10 @@ proto.protoblog.LsReply.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * repeated string keys = 1;
+ * repeated string dirs = 1;
  * @return {!Array<string>}
  */
-proto.protoblog.LsReply.prototype.getKeysList = function() {
+proto.protoblog.LsReply.prototype.getDirsList = function() {
   return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 1));
 };
 
@@ -669,7 +669,7 @@ proto.protoblog.LsReply.prototype.getKeysList = function() {
  * @param {!Array<string>} value
  * @return {!proto.protoblog.LsReply} returns this
  */
-proto.protoblog.LsReply.prototype.setKeysList = function(value) {
+proto.protoblog.LsReply.prototype.setDirsList = function(value) {
   return jspb.Message.setField(this, 1, value || []);
 };
 
@@ -679,45 +679,8 @@ proto.protoblog.LsReply.prototype.setKeysList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.protoblog.LsReply} returns this
  */
-proto.protoblog.LsReply.prototype.addKeys = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 1, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.protoblog.LsReply} returns this
- */
-proto.protoblog.LsReply.prototype.clearKeysList = function() {
-  return this.setKeysList([]);
-};
-
-
-/**
- * repeated string dirs = 2;
- * @return {!Array<string>}
- */
-proto.protoblog.LsReply.prototype.getDirsList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.protoblog.LsReply} returns this
- */
-proto.protoblog.LsReply.prototype.setDirsList = function(value) {
-  return jspb.Message.setField(this, 2, value || []);
-};
-
-
-/**
- * @param {string} value
- * @param {number=} opt_index
- * @return {!proto.protoblog.LsReply} returns this
- */
 proto.protoblog.LsReply.prototype.addDirs = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+  return jspb.Message.addToRepeatedField(this, 1, value, opt_index);
 };
 
 
@@ -727,6 +690,43 @@ proto.protoblog.LsReply.prototype.addDirs = function(value, opt_index) {
  */
 proto.protoblog.LsReply.prototype.clearDirsList = function() {
   return this.setDirsList([]);
+};
+
+
+/**
+ * repeated string keys = 2;
+ * @return {!Array<string>}
+ */
+proto.protoblog.LsReply.prototype.getKeysList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.protoblog.LsReply} returns this
+ */
+proto.protoblog.LsReply.prototype.setKeysList = function(value) {
+  return jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.protoblog.LsReply} returns this
+ */
+proto.protoblog.LsReply.prototype.addKeys = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.protoblog.LsReply} returns this
+ */
+proto.protoblog.LsReply.prototype.clearKeysList = function() {
+  return this.setKeysList([]);
 };
 
 

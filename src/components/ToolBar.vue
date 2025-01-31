@@ -1,13 +1,26 @@
 <script setup>
 import { onMounted } from "vue";
 import { useTheme } from "vuetify";
-import { currPath, pathFocus, pathRef } from "../status";
+import { currSession, pathFocus, pathRef, selected, candidateSessions } from "../status";
+import { switchAndRefresh, currPath, currUser } from "../database.js";
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
     if (event.code == "KeyP" && event.ctrlKey) {
       event.preventDefault();
       pathRef.value.focus();
+    } else if (event.code == "KeyO" && event.ctrlKey) {
+      event.preventDefault();
+      goBack();
+    } else if (
+      (event.code == "KeyD" || event.code == "Delete") &&
+      selected.value.length > 0
+    ) {
+      event.preventDefault();
+      deleteItem();
+    } else if (event.code == "KeyC" && selected.value.length > 0) {
+      event.preventDefault();
+      copyItem();
     }
   });
 });
@@ -22,9 +35,36 @@ function isDark() {
   return theme.global.current._value.dark;
 }
 
-function copyItem() {}
+function goBack() {
+  if (currSession.value == "/") {
+    return;
+  }
+  if (currPath.value == "") {
+    switchAndRefresh(null);
+  } else {
+    let path = currPath.value.split("/");
+    if (path.length == 1) {
+      currPath.value = "";
+      switchAndRefresh(`/${currUser.value}`);
+    } else {
+      path = path.slice(0, path.length - 1);
+      currPath.value = path.join("/");
+      switchAndRefresh(`/${currUser.value}/${currPath.value}`);
+    }
+  }
+  if (pathFocus.value) {
+    pathRef.value.blur();
+    pathRef.value.focus();
+  }
+}
 
-function deleteItem() {}
+function copyItem() {
+  console.log(2);
+}
+
+function deleteItem() {
+  console.log(1);
+}
 
 function customFilter(value, query, item) {
   let pattern = query
@@ -38,7 +78,7 @@ function customFilter(value, query, item) {
 }
 
 function pathUpdate(event) {
-  console.log(currPath.value);
+  switchAndRefresh(currSession.value);
 }
 </script>
 
@@ -54,33 +94,42 @@ function pathUpdate(event) {
 
         <v-spacer />
 
-        <span v-cloak style="white-space: break-spaces" v-html="`current path:  `"></span>
+        <span
+          v-cloak
+          style="white-space: break-spaces"
+          v-html="`current session:  `"
+        ></span>
         <v-responsive>
           <v-spacer />
           <v-autocomplete
             ref="pathRef"
             variant="underlined"
-            v-model="currPath"
+            v-model="currSession"
             prepend-inner-icon="mdi-airplane"
             auto-select-first
             @focus="pathFocus = true"
             @blur="pathFocus = false"
             @update:modelValue="pathUpdate"
-            :items="['/California', '/Colorado', '/Florida']"
+            :items="candidateSessions"
             :custom-filter="customFilter"
           ></v-autocomplete>
 
           <v-spacer></v-spacer>
         </v-responsive>
 
+        <v-btn icon @click="goBack">
+          <v-icon>mdi-arrow-left</v-icon>
+          <v-tooltip activator="parent">back (Ctrl+O)</v-tooltip>
+        </v-btn>
+
         <v-btn icon @click="copyItem">
           <v-icon>mdi-content-copy</v-icon>
-          <v-tooltip activator="parent">copy</v-tooltip>
+          <v-tooltip activator="parent">copy (C)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="deleteItem">
           <v-icon>mdi-trash-can </v-icon>
-          <v-tooltip activator="parent">delete</v-tooltip>
+          <v-tooltip activator="parent">delete (D / Delete)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="toggleTheme">

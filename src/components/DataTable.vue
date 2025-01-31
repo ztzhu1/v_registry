@@ -1,14 +1,13 @@
 <script setup>
 import { useTheme } from "vuetify";
 import { ref, shallowRef, onMounted } from "vue";
-import { pathRef, pathFocus } from "../status";
-import { ls } from "../database.js";
+import { currSession, pathRef, pathFocus, items, idIndexMap ,selected} from "../status";
+import { switchAndRefresh } from "../database.js";
 
 const theme = useTheme();
 let vimMode = "normal";
 let searchFocus = ref(false);
 const search = ref("");
-const selected = ref([]);
 let searchRef = ref();
 
 onMounted(() => {
@@ -49,35 +48,16 @@ function isDark() {
   return theme.global.current._value.dark;
 }
 
-const items = ref([]);
-const idIndexMap = {};
 const dialog = shallowRef(false);
 const dialogText = ref(null);
 const dialogItem = ref(null);
 const dialogTitle = ref("");
-
-for (let i = 0; i < 20; i++) {
-  let type = "";
-  if (i < 5) {
-    type = "folder";
-  } else {
-    type = "key";
-  }
-  let item = {
-    key: `${type}.key${i}`,
-    value: 100 * i,
-    id: `id${i}`,
-  };
-  if (i < 5) {
-    item["value"] = null;
-  }
-  items.value.push(item);
-  idIndexMap[items.value[items.value.length - 1]["id"]] = i;
-}
 const headers = [
   { title: "key", key: "key", align: "center" },
   { title: "value", key: "value", align: "center" },
 ];
+
+switchAndRefresh("/test_user");
 
 function rowClick(event, row) {
   if (event.detail != 1) {
@@ -104,23 +84,25 @@ function rowClick(event, row) {
   }
 }
 
-let result = [];
 function rowDoubleClick(event, row) {
   if (event.detail != 2) {
     return;
   }
-  ls((response) => {
-    result.push(response[0]);
-  });
 
-  if (result.length > 0) {
-    console.log(result[0]);
-  }
+  let [type, name] = row.internalItem.raw["key"].split(".");
   selected.value = [];
-  dialogText.value = null;
-  dialogItem.value = row.internalItem.raw;
-  dialogTitle.value = row.internalItem.raw["key"].split(".")[1];
-  dialog.value = true;
+  if (type.split(".")[0] == "folder") {
+    if (currSession.value == "/") {
+      switchAndRefresh(`${currSession.value}${name}`);
+    } else {
+      switchAndRefresh(`${currSession.value}/${name}`);
+    }
+  } else {
+    dialogText.value = null;
+    dialogItem.value = row.internalItem.raw;
+    dialogTitle.value = name;
+    dialog.value = true;
+  }
 }
 
 function closeClick() {
