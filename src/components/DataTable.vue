@@ -2,6 +2,7 @@
 import { useTheme } from "vuetify";
 import { ref, shallowRef, onMounted } from "vue";
 import { pathRef, pathFocus } from "../status";
+import { ls } from "../database.js";
 
 const theme = useTheme();
 let vimMode = "normal";
@@ -103,9 +104,17 @@ function rowClick(event, row) {
   }
 }
 
+let result = [];
 function rowDoubleClick(event, row) {
   if (event.detail != 2) {
     return;
+  }
+  ls((response) => {
+    result.push(response[0]);
+  });
+
+  if (result.length > 0) {
+    console.log(result[0]);
   }
   selected.value = [];
   dialogText.value = null;
