@@ -382,16 +382,16 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.deleteKey =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.protoblog.DeleteFolderRequest,
+ *   !proto.protoblog.DirRequest,
  *   !proto.protoblog.StringReply>}
  */
-const methodDescriptor_VRegistryServer_DeleteFolder = new grpc.web.MethodDescriptor(
-  '/protoblog.VRegistryServer/DeleteFolder',
+const methodDescriptor_VRegistryServer_DeleteDir = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/DeleteDir',
   grpc.web.MethodType.UNARY,
-  proto.protoblog.DeleteFolderRequest,
+  proto.protoblog.DirRequest,
   proto.protoblog.StringReply,
   /**
-   * @param {!proto.protoblog.DeleteFolderRequest} request
+   * @param {!proto.protoblog.DirRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
@@ -402,7 +402,7 @@ const methodDescriptor_VRegistryServer_DeleteFolder = new grpc.web.MethodDescrip
 
 
 /**
- * @param {!proto.protoblog.DeleteFolderRequest} request The
+ * @param {!proto.protoblog.DirRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
@@ -411,32 +411,93 @@ const methodDescriptor_VRegistryServer_DeleteFolder = new grpc.web.MethodDescrip
  * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.protoblog.VRegistryServerClient.prototype.deleteFolder =
+proto.protoblog.VRegistryServerClient.prototype.deleteDir =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/protoblog.VRegistryServer/DeleteFolder',
+      '/protoblog.VRegistryServer/DeleteDir',
       request,
       metadata || {},
-      methodDescriptor_VRegistryServer_DeleteFolder,
+      methodDescriptor_VRegistryServer_DeleteDir,
       callback);
 };
 
 
 /**
- * @param {!proto.protoblog.DeleteFolderRequest} request The
+ * @param {!proto.protoblog.DirRequest} request The
  *     request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.protoblog.StringReply>}
  *     Promise that resolves to the response
  */
-proto.protoblog.VRegistryServerPromiseClient.prototype.deleteFolder =
+proto.protoblog.VRegistryServerPromiseClient.prototype.deleteDir =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/protoblog.VRegistryServer/DeleteFolder',
+      '/protoblog.VRegistryServer/DeleteDir',
       request,
       metadata || {},
-      methodDescriptor_VRegistryServer_DeleteFolder);
+      methodDescriptor_VRegistryServer_DeleteDir);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.DirRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_NewDir = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/NewDir',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.DirRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.DirRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.DirRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.newDir =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/NewDir',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_NewDir,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.DirRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.newDir =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/NewDir',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_NewDir);
 };
 
 

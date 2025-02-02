@@ -15,13 +15,21 @@ import {
   deleteDialog,
   deleteDialogTitle,
   deleteDialogText,
+  newDirDialog,
+  newDirDialogText,
+  newKeyDialog,
+  newKeyDialogText,
+  newKeyDialogTitle,
+  newValueDialogText,
+  newDirDialogTitle,
 } from "../status";
 import {
   refreshUI,
   switchAndRefresh,
   saveKey,
   deleteKey,
-  deleteFolder,
+  deleteDir,
+  showUsers,
 } from "../database.js";
 
 const theme = useTheme();
@@ -29,6 +37,7 @@ let vimMode = "normal";
 let searchFocus = ref(false);
 const search = ref("");
 let searchRef = ref();
+let keyDialogRef = ref();
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
@@ -48,6 +57,12 @@ onMounted(() => {
       }
       if (deleteDialog.value) {
         deleteClick();
+      }
+      if (newDirDialog.value) {
+        newDirClick();
+      }
+      if (newKeyDialog.value) {
+        newKeyClick();
       }
     } else if (event.code == "KeyI" && vimMode != "insert") {
       vimMode = "insert";
@@ -137,6 +152,33 @@ function saveClick() {
   clearDialog();
 }
 
+function newDirClick() {
+  console.log(newDirDialogText.value);
+  clearDialog();
+}
+
+function newKeyClick() {
+  if (showUsers.value) {
+    alert("Cannot create new key in root directory");
+    clearDialog();
+  } else {
+    let exists = false;
+    for (const item of items.value) {
+      if (item["key"] == `key.${newKeyDialogText.value}`) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      saveKey(newKeyDialogText.value, newValueDialogText.value);
+      clearDialog();
+    } else {
+      alert(`${newKeyDialogText.value} already exists`);
+      keyDialogRef.value.focus();
+    }
+  }
+}
+
 function deleteClick() {
   // saveKey(dialogItem.value["key"].split(".")[1], dialogText.value);
   const keys = [];
@@ -152,12 +194,11 @@ function deleteClick() {
       folders.push(key);
     }
   }
-  console.log(keys, folders);
   if (keys.length > 0) {
     deleteKey(keys);
   }
   for (const folder of folders) {
-    deleteFolder(folder);
+    deleteDir(folder);
   }
   clearDialog();
 }
@@ -167,6 +208,8 @@ function clearDialog() {
   dialogItem.value = null;
   dialog.value = false;
   deleteDialog.value = false;
+  newDirDialog.value = false;
+  newKeyDialog.value = false;
 }
 
 function getColor(value, isKey) {
@@ -321,6 +364,76 @@ function colorRowItem(item) {
           <v-btn color="primary" variant="tonal" @click="deleteClick">
             <v-icon>mdi-trash-can</v-icon
             ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Delete</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="newDirDialog" persistent>
+      <v-card prepend-icon="mdi-folder-plus-outline" :title="newDirDialogTitle">
+        <v-card-title
+          ><v-text-field
+            variant="outlined"
+            v-model="newDirDialogText"
+            clear-icon="mdi-close-circle"
+            clearable
+            autofocus
+            counter
+            auto-grow
+          ></v-text-field
+        ></v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="plain" @click="closeClick">
+            <v-icon>mdi-close-circle-outline </v-icon
+            ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
+          >
+          <v-btn color="primary" variant="tonal" @click="newDirClick">
+            <v-icon>mdi-content-save-edit-outline</v-icon
+            ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="newKeyDialog" persistent>
+      <v-card prepend-icon="mdi-key-plus" :title="newKeyDialogTitle">
+        <v-card-title
+          ><v-text-field
+            label="new key"
+            variant="outlined"
+            v-model="newKeyDialogText"
+            ref="keyDialogRef"
+            autofocus
+            counter
+            auto-grow
+          ></v-text-field
+        ></v-card-title>
+
+        <v-card-title
+          ><v-textarea
+            label="new value"
+            variant="outlined"
+            v-model="newValueDialogText"
+            counter
+            auto-grow
+          ></v-textarea
+        ></v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="plain" @click="closeClick">
+            <v-icon>mdi-close-circle-outline </v-icon
+            ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
+          >
+          <v-btn color="primary" variant="tonal" @click="newKeyClick">
+            <v-icon>mdi-content-save-edit-outline</v-icon
+            ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
           >
         </v-card-actions>
       </v-card>

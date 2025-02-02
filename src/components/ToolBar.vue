@@ -9,8 +9,15 @@ import {
   candidateSessions,
   deleteDialog,
   deleteDialogText,
+  newDirDialog,
+  newKeyDialog,
+  newDirDialogTitle,
+  newKeyDialogTitle,
+  newKeyDialogText,
+  newValueDialogText,
+  newDirDialogText,
 } from "../status";
-import { switchAndRefresh, currPath, currUser, refreshUI } from "../database.js";
+import { switchAndRefresh, currPath, currUser, refreshUI, showUsers } from "../database.js";
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
@@ -20,6 +27,13 @@ onMounted(() => {
     } else if (event.code == "KeyO" && event.ctrlKey) {
       event.preventDefault();
       goBack();
+    } else if (event.code == "KeyN") {
+      event.preventDefault();
+      if (event.shiftKey) {
+        newDir();
+      } else {
+        newKey();
+      }
     } else if (
       (event.code == "KeyD" || event.code == "Delete") &&
       selected.value.length > 0
@@ -64,6 +78,23 @@ function goBack() {
     pathRef.value.blur();
     pathRef.value.focus();
   }
+}
+
+function newDir() {
+  newDirDialogTitle.value = "new dir";
+  newDirDialogText.value = "";
+  newDirDialog.value = true;
+}
+
+function newKey() {
+  if (showUsers.value) {
+    alert("Cannot create new key in root directory");
+    return;
+  }
+  newKeyDialogTitle.value = "new key";
+  newKeyDialogText.value = "";
+  newValueDialogText.value = "";
+  newKeyDialog.value = true;
 }
 
 function copyItem() {
@@ -133,6 +164,16 @@ function pathUpdate(event) {
         <v-btn icon @click="refreshUI">
           <v-icon>mdi-refresh</v-icon>
           <v-tooltip activator="parent">refresh (Ctrl+R)</v-tooltip>
+        </v-btn>
+
+        <v-btn icon @click="newDir">
+          <v-icon>mdi-folder-plus-outline</v-icon>
+          <v-tooltip activator="parent">new_dir (Shift+N)</v-tooltip>
+        </v-btn>
+
+        <v-btn icon @click="newKey">
+          <v-icon>mdi-key-plus</v-icon>
+          <v-tooltip activator="parent">new_key (N)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="copyItem">

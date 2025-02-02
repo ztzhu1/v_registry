@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DeleteFolderRequest } from './v_registry_server_pb';
+import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DirRequest } from './v_registry_server_pb';
 import { VRegistryServerClient } from './v_registry_server_grpc_web_pb';
 import { items, idIndexMap, currSession, candidateSessions, selected, dialog, dialogText, dialogItem, dialogTitle } from './status'
 
@@ -160,8 +160,8 @@ export function deleteKey(keys) {
     });
 }
 
-export function deleteFolder(folderName) {
-    let request = new DeleteFolderRequest();
+export function deleteDir(folderName) {
+    let request = new DirRequest();
     if (showUsers.value) {
         request.setUser(folderName);
         request.setPath("");
@@ -174,9 +174,9 @@ export function deleteFolder(folderName) {
         }
     }
 
-    CLIENT.deleteFolder(request, {}, (err, response) => {
+    CLIENT.deleteDir(request, {}, (err, response) => {
         if (err) {
-            console.log(`Unexpected error for deleteFolder: code = ${err.code}` +
+            console.log(`Unexpected error for deleteDir: code = ${err.code}` +
                 `, message = "${err.message}"`);
         } else {
             console.log(response['u'][0]);
