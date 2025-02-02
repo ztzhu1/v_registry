@@ -1,8 +1,28 @@
 <script setup>
 import { useTheme } from "vuetify";
-import { ref, shallowRef, onMounted } from "vue";
-import { currSession, pathRef, pathFocus, items, idIndexMap ,selected} from "../status";
-import { switchAndRefresh } from "../database.js";
+import { ref, onMounted } from "vue";
+import {
+  currSession,
+  pathRef,
+  pathFocus,
+  items,
+  idIndexMap,
+  selected,
+  dialog,
+  dialogText,
+  dialogItem,
+  dialogTitle,
+  deleteDialog,
+  deleteDialogTitle,
+  deleteDialogText,
+} from "../status";
+import {
+  refreshUI,
+  switchAndRefresh,
+  saveKey,
+  deleteKey,
+  deleteFolder,
+} from "../database.js";
 
 const theme = useTheme();
 let vimMode = "normal";
@@ -26,6 +46,9 @@ onMounted(() => {
       if (dialog.value) {
         saveClick();
       }
+      if (deleteDialog.value) {
+        deleteClick();
+      }
     } else if (event.code == "KeyI" && vimMode != "insert") {
       vimMode = "insert";
     } else if (event.code == "KeyV" && vimMode == "normal") {
@@ -40,6 +63,9 @@ onMounted(() => {
       if (!pathFocus.value) {
         searchRef.value.focus();
       }
+    } else if (event.code == "KeyR" && event.ctrlKey) {
+      event.preventDefault();
+      refreshUI();
     }
   });
 });
@@ -48,10 +74,6 @@ function isDark() {
   return theme.global.current._value.dark;
 }
 
-const dialog = shallowRef(false);
-const dialogText = ref(null);
-const dialogItem = ref(null);
-const dialogTitle = ref("");
 const headers = [
   { title: "key", key: "key", align: "center" },
   { title: "value", key: "value", align: "center" },
@@ -98,11 +120,12 @@ function rowDoubleClick(event, row) {
       switchAndRefresh(`${currSession.value}/${name}`);
     }
   } else {
-    dialogText.value = null;
-    dialogItem.value = row.internalItem.raw;
-    dialogTitle.value = name;
-    dialog.value = true;
+    refreshUI(name);
   }
+}
+
+function getKey(id) {
+  return items.value[idIndexMap[id]]["key"];
 }
 
 function closeClick() {
@@ -110,7 +133,32 @@ function closeClick() {
 }
 
 function saveClick() {
-  console.log(dialogText.value, dialogItem.value);
+  saveKey(dialogItem.value["key"].split(".")[1], dialogText.value);
+  clearDialog();
+}
+
+function deleteClick() {
+  // saveKey(dialogItem.value["key"].split(".")[1], dialogText.value);
+  const keys = [];
+  const folders = [];
+  let type = "";
+  let key = "";
+  for (const id of selected.value) {
+    key = getKey(id);
+    [type, key] = key.split(".");
+    if (type == "key") {
+      keys.push(key);
+    } else {
+      folders.push(key);
+    }
+  }
+  console.log(keys, folders);
+  if (keys.length > 0) {
+    deleteKey(keys);
+  }
+  for (const folder of folders) {
+    deleteFolder(folder);
+  }
   clearDialog();
 }
 
@@ -118,6 +166,7 @@ function clearDialog() {
   dialogText.value = null;
   dialogItem.value = null;
   dialog.value = false;
+  deleteDialog.value = false;
 }
 
 function getColor(value, isKey) {
@@ -252,6 +301,26 @@ function colorRowItem(item) {
           <v-btn color="primary" variant="tonal" @click="saveClick">
             <v-icon>mdi-content-save-edit-outline</v-icon
             ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteDialog" persistent>
+      <v-card prepend-icon="mdi-trash-can" :title="deleteDialogTitle">
+        <v-card-title>{{ deleteDialogText }}</v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="plain" @click="closeClick">
+            <v-icon>mdi-close-circle-outline </v-icon
+            ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
+          >
+          <v-btn color="primary" variant="tonal" @click="deleteClick">
+            <v-icon>mdi-trash-can</v-icon
+            ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Delete</v-btn
           >
         </v-card-actions>
       </v-card>

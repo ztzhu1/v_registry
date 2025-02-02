@@ -200,67 +200,6 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.getCollNames =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.protoblog.RegistryRequest,
- *   !proto.protoblog.StringReply>}
- */
-const methodDescriptor_VRegistryServer_SwitchUser = new grpc.web.MethodDescriptor(
-  '/protoblog.VRegistryServer/SwitchUser',
-  grpc.web.MethodType.UNARY,
-  proto.protoblog.RegistryRequest,
-  proto.protoblog.StringReply,
-  /**
-   * @param {!proto.protoblog.RegistryRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.protoblog.StringReply.deserializeBinary
-);
-
-
-/**
- * @param {!proto.protoblog.RegistryRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.protoblog.VRegistryServerClient.prototype.switchUser =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/protoblog.VRegistryServer/SwitchUser',
-      request,
-      metadata || {},
-      methodDescriptor_VRegistryServer_SwitchUser,
-      callback);
-};
-
-
-/**
- * @param {!proto.protoblog.RegistryRequest} request The
- *     request proto
- * @param {?Object<string, string>=} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.protoblog.StringReply>}
- *     Promise that resolves to the response
- */
-proto.protoblog.VRegistryServerPromiseClient.prototype.switchUser =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/protoblog.VRegistryServer/SwitchUser',
-      request,
-      metadata || {},
-      methodDescriptor_VRegistryServer_SwitchUser);
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.protoblog.RegistryRequest,
  *   !proto.protoblog.LsReply>}
  */
 const methodDescriptor_VRegistryServer_Ls = new grpc.web.MethodDescriptor(
@@ -315,6 +254,189 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.ls =
       request,
       metadata || {},
       methodDescriptor_VRegistryServer_Ls);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.SaveKeyRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_SaveKey = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/SaveKey',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.SaveKeyRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.SaveKeyRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.SaveKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.saveKey =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/SaveKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_SaveKey,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.SaveKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.saveKey =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/SaveKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_SaveKey);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.DeleteKeyRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_DeleteKey = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/DeleteKey',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.DeleteKeyRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.DeleteKeyRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.DeleteKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.deleteKey =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/DeleteKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_DeleteKey,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.DeleteKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.deleteKey =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/DeleteKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_DeleteKey);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.DeleteFolderRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_DeleteFolder = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/DeleteFolder',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.DeleteFolderRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.DeleteFolderRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.DeleteFolderRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.deleteFolder =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/DeleteFolder',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_DeleteFolder,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.DeleteFolderRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.deleteFolder =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/DeleteFolder',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_DeleteFolder);
 };
 
 

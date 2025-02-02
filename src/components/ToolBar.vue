@@ -1,8 +1,16 @@
 <script setup>
 import { onMounted } from "vue";
 import { useTheme } from "vuetify";
-import { currSession, pathFocus, pathRef, selected, candidateSessions } from "../status";
-import { switchAndRefresh, currPath, currUser } from "../database.js";
+import {
+  currSession,
+  pathFocus,
+  pathRef,
+  selected,
+  candidateSessions,
+  deleteDialog,
+  deleteDialogText,
+} from "../status";
+import { switchAndRefresh, currPath, currUser, refreshUI } from "../database.js";
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
@@ -18,7 +26,7 @@ onMounted(() => {
     ) {
       event.preventDefault();
       deleteItem();
-    } else if (event.code == "KeyC" && selected.value.length > 0) {
+    } else if (event.code == "KeyC" && event.ctrlKey && selected.value.length > 0) {
       event.preventDefault();
       copyItem();
     }
@@ -63,7 +71,8 @@ function copyItem() {
 }
 
 function deleteItem() {
-  console.log(1);
+  deleteDialog.value = true;
+  deleteDialogText.value = `delete ${selected.value.length} items?`;
 }
 
 function customFilter(value, query, item) {
@@ -121,10 +130,14 @@ function pathUpdate(event) {
           <v-icon>mdi-arrow-left</v-icon>
           <v-tooltip activator="parent">back (Ctrl+O)</v-tooltip>
         </v-btn>
+        <v-btn icon @click="refreshUI">
+          <v-icon>mdi-refresh</v-icon>
+          <v-tooltip activator="parent">refresh (Ctrl+R)</v-tooltip>
+        </v-btn>
 
         <v-btn icon @click="copyItem">
           <v-icon>mdi-content-copy</v-icon>
-          <v-tooltip activator="parent">copy (C)</v-tooltip>
+          <v-tooltip activator="parent">copy (Ctrl+C)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="deleteItem">
