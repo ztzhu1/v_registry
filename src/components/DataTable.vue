@@ -30,6 +30,7 @@ import {
   deleteKey,
   deleteDir,
   showUsers,
+  newDir,
 } from "../database.js";
 
 const theme = useTheme();
@@ -153,8 +154,24 @@ function saveClick() {
 }
 
 function newDirClick() {
-  console.log(newDirDialogText.value);
-  clearDialog();
+  if (showUsers.value) {
+    newDir(newDirDialogText.value);
+    clearDialog();
+  } else {
+    let exists = false;
+    for (const item of items.value) {
+      if (item["key"] == `folder.${newDirDialogText.value}`) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      newDir(newDirDialogText.value);
+      clearDialog();
+    } else {
+      alert(`${newDirDialogText.value} already exists`);
+    }
+  }
 }
 
 function newKeyClick() {
@@ -298,7 +315,7 @@ function colorRowItem(item) {
             <v-icon v-if="value.split('.')[0] == 'folder'" color="#dcb67a"
               >mdi-folder</v-icon
             >
-            <v-icon v-else>mdi-key-variant</v-icon>
+            <v-icon v-else>mdi-file-key-outline</v-icon>
             <v-chip :color="getColor(value, true)" v-ripple variant="tonal">
               {{ value.split(".")[1] }}
             </v-chip>

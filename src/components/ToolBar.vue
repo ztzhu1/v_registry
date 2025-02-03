@@ -16,8 +16,15 @@ import {
   newKeyDialogText,
   newValueDialogText,
   newDirDialogText,
+  moreDialog,
 } from "../status";
-import { switchAndRefresh, currPath, currUser, refreshUI, showUsers } from "../database.js";
+import {
+  switchAndRefresh,
+  currPath,
+  currUser,
+  refreshUI,
+  showUsers,
+} from "../database.js";
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
@@ -51,6 +58,13 @@ const theme = useTheme();
 
 function toggleTheme() {
   theme.global.name.value = isDark() ? "light" : "dark";
+}
+
+function popMore() {
+  moreDialog.value = true;
+}
+function moreClick() {
+  moreDialog.value = false;
 }
 
 function isDark() {
@@ -168,12 +182,12 @@ function pathUpdate(event) {
 
         <v-btn icon @click="newDir">
           <v-icon>mdi-folder-plus-outline</v-icon>
-          <v-tooltip activator="parent">new_dir (Shift+N)</v-tooltip>
+          <v-tooltip activator="parent">new dir (Shift+N)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="newKey">
           <v-icon>mdi-key-plus</v-icon>
-          <v-tooltip activator="parent">new_key (N)</v-tooltip>
+          <v-tooltip activator="parent">new key (N)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="copyItem">
@@ -192,7 +206,7 @@ function pathUpdate(event) {
           <v-tooltip activator="parent">light/dark</v-tooltip>
         </v-btn>
 
-        <v-btn icon>
+        <v-btn icon @click="popMore">
           <v-icon>mdi-dots-vertical</v-icon>
           <v-tooltip activator="parent">more</v-tooltip>
         </v-btn>
@@ -203,6 +217,19 @@ function pathUpdate(event) {
       </v-main>
     </v-layout>
   </v-card>
+
+  <v-dialog v-model="moreDialog" persistent>
+    <v-card>
+      <v-card-title align="center">Copyright &copy; 2025 SQCG & ztzhu. All rights reserved.</v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn variant="plain" @click="moreClick"> OK</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>

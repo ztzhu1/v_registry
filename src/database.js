@@ -185,3 +185,29 @@ export function deleteDir(folderName) {
     });
 }
 
+
+export function newDir(folderName) {
+    let request = new DirRequest();
+    if (showUsers.value) {
+        request.setUser(folderName);
+        request.setPath("");
+    } else {
+        request.setUser(currUser.value);
+        if (currPath.value == "") {
+            request.setPath(folderName);
+        } else {
+            request.setPath(`${currPath.value}/${folderName}`);
+        }
+    }
+
+    CLIENT.newDir(request, {}, (err, response) => {
+        if (err) {
+            console.log(`Unexpected error for newDir: code = ${err.code}` +
+                `, message = "${err.message}"`);
+        } else {
+            console.log(response['u'][0]);
+        }
+        refreshUI()
+    });
+}
+

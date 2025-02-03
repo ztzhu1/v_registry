@@ -28,3 +28,5 @@ export let newKeyDialog = shallowRef(false);
 export let newKeyDialogText = ref(null);
 export let newValueDialogText = ref(null);
 export let newKeyDialogTitle = ref("new key");
+
+export let moreDialog = shallowRef(false);
