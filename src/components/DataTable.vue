@@ -145,6 +145,7 @@ function rowDoubleClick(event, row) {
 
   let [type, name] = row.internalItem.raw["key"].split(".");
   selected.value = [];
+  search.value = ""
   if (type.split(".")[0] == "folder") {
     if (currSession.value == "/") {
       switchAndRefresh(`${currSession.value}${name}`);
