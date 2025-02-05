@@ -4,6 +4,7 @@ export let currSession = ref("/test_user/N121H09")
 
 export let pathFocus = ref(false);
 export let pathRef = ref();
+export let searchFocus = ref(false);
 
 export let selected = ref([]);
 export let items = ref([]);
@@ -49,5 +50,5 @@ export function noDialog() {
 }
 
 export function noFocus() {
-    return !pathFocus.value && !dialog.value;
+    return !pathFocus.value && !searchFocus.value;
 }
