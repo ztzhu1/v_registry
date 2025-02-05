@@ -321,6 +321,67 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.saveKey =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.CopyKeyRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_CopyKey = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/CopyKey',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.CopyKeyRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.CopyKeyRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.CopyKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.copyKey =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/CopyKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_CopyKey,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.CopyKeyRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.copyKey =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/CopyKey',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_CopyKey);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.protoblog.DeleteKeyRequest,
  *   !proto.protoblog.StringReply>}
  */
@@ -498,6 +559,67 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.newDir =
       request,
       metadata || {},
       methodDescriptor_VRegistryServer_NewDir);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.CopyDirRequest,
+ *   !proto.protoblog.StringReply>}
+ */
+const methodDescriptor_VRegistryServer_CopyDir = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/CopyDir',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.CopyDirRequest,
+  proto.protoblog.StringReply,
+  /**
+   * @param {!proto.protoblog.CopyDirRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.CopyDirRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.copyDir =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/CopyDir',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_CopyDir,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.CopyDirRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.copyDir =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/CopyDir',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_CopyDir);
 };
 
 

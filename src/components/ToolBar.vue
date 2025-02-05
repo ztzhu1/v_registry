@@ -3,6 +3,8 @@ import { onMounted } from "vue";
 import { useTheme } from "vuetify";
 import {
   currSession,
+  items,
+  idIndexMap,
   pathFocus,
   pathRef,
   selected,
@@ -16,7 +18,12 @@ import {
   newKeyDialogText,
   newValueDialogText,
   newDirDialogText,
+  newDirNameDisabled,
   moreDialog,
+  copyDialog,
+  copyDialogText,
+  copyNewDirDialogText,
+  noDialog,
 } from "../status";
 import {
   switchAndRefresh,
@@ -28,6 +35,9 @@ import {
 
 onMounted(() => {
   window.addEventListener("keydown", (event) => {
+    if (!noDialog()) {
+      return;
+    }
     if (event.code == "KeyP" && event.ctrlKey) {
       event.preventDefault();
       pathRef.value.focus();
@@ -47,7 +57,7 @@ onMounted(() => {
     ) {
       event.preventDefault();
       deleteItem();
-    } else if (event.code == "KeyC" && event.ctrlKey && selected.value.length > 0) {
+    } else if (event.code == "KeyC" && selected.value.length > 0) {
       event.preventDefault();
       copyItem();
     }
@@ -112,7 +122,24 @@ function newKey() {
 }
 
 function copyItem() {
-  console.log(2);
+  if (selected.value.length == 0) {
+    return;
+  }
+  copyDialogText.value = currSession.value;
+  copyNewDirDialogText.value = "same as old (you cannot edit this)";
+  if (selected.value.length == 1) {
+    let key = items.value[idIndexMap[selected.value[0]]]["key"];
+    if (key.split(".")[0] == "folder") {
+      newDirNameDisabled.value = false;
+      copyNewDirDialogText.value = key.split(".")[1];
+    } else {
+      newDirNameDisabled.value = true;
+    }
+  } else {
+    newDirNameDisabled.value = true;
+  }
+  copyDialog.value = true;
+  console.log(newDirNameDisabled.value);
 }
 
 function deleteItem() {
@@ -192,7 +219,7 @@ function pathUpdate(event) {
 
         <v-btn icon @click="copyItem">
           <v-icon>mdi-content-copy</v-icon>
-          <v-tooltip activator="parent">copy (Ctrl+C)</v-tooltip>
+          <v-tooltip activator="parent">copy (C)</v-tooltip>
         </v-btn>
 
         <v-btn icon @click="deleteItem">
@@ -220,7 +247,9 @@ function pathUpdate(event) {
 
   <v-dialog v-model="moreDialog" persistent>
     <v-card>
-      <v-card-title align="center">Copyright &copy; 2025 SQCG & ztzhu. All rights reserved.</v-card-title>
+      <v-card-title align="center"
+        >BSD 2-Clause License. Copyright &copy; 2025 SQCG & ztzhu.</v-card-title
+      >
 
       <v-divider></v-divider>
 

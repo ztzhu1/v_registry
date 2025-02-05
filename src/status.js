@@ -30,3 +30,20 @@ export let newValueDialogText = ref(null);
 export let newKeyDialogTitle = ref("new key");
 
 export let moreDialog = shallowRef(false);
+
+export let copyDialog = shallowRef(false);
+export let copyDialogText = ref(null);
+export let copyNewDirDialogText = ref(null);
+export let copyNewDirDialog = shallowRef(false);
+export let copyDialogTitle = ref("copy (it will overwrite the old path if exists)");
+export let newDirNameDisabled = ref(true);
+
+export function noDialog() {
+    return (
+        !dialog.value &&
+        !deleteDialog.value &&
+        !newDirDialog.value &&
+        !newKeyDialog.value &&
+        !copyDialog.value
+    );
+}

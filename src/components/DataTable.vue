@@ -22,8 +22,16 @@ import {
   newKeyDialogTitle,
   newValueDialogText,
   newDirDialogTitle,
+  copyDialog,
+  copyDialogTitle,
+  copyDialogText,
+  copyNewDirDialogText,
+  newDirNameDisabled,
+  noDialog,
 } from "../status";
 import {
+  currUser,
+  currPath,
   refreshUI,
   switchAndRefresh,
   saveKey,
@@ -31,6 +39,8 @@ import {
   deleteDir,
   showUsers,
   newDir,
+  copyKey,
+  copyDir,
 } from "../database.js";
 
 const theme = useTheme();
@@ -65,11 +75,17 @@ onMounted(() => {
       if (newKeyDialog.value) {
         newKeyClick();
       }
+      if (copyDialog.value) {
+        copyClick();
+      }
     } else if (event.code == "KeyI" && vimMode != "insert") {
       vimMode = "insert";
     } else if (event.code == "KeyV" && vimMode == "normal") {
       vimMode = "visual";
-    } else if ((event.code == "KeyF" && event.ctrlKey) || event.code == "Slash") {
+    } else if (
+      ((event.code == "KeyF" && event.ctrlKey) || event.code == "Slash") &&
+      noDialog()
+    ) {
       if (event.code == "KeyF" && event.ctrlKey) {
         event.preventDefault();
       }
@@ -148,6 +164,46 @@ function closeClick() {
   clearDialog();
 }
 
+function copyClick() {
+  let result = copyDialogText.value.split("/");
+  result = result.slice(1, result.length);
+
+  let newUser = "";
+  let newPath = "";
+
+  if (result.length == 0) {
+    alert("invalid new path");
+    return;
+  } else if (result.length == 1) {
+    newUser = result[0];
+  } else {
+    [newUser, ...newPath] = result;
+    newPath = newPath.join("/");
+  }
+  if (newUser == "") {
+    alert("invalid new path");
+    return;
+  }
+  for (const id of selected.value) {
+    const [type, key] = getKey(id).split(".");
+    if (key == "folder") {
+      if (showUsers.value) {
+        if (newPath != "") {
+          console.log(1)
+          alert("invalid new path");
+          return;
+        }
+        copyDir(currUser.value, "", newUser, newPath);
+      } else {
+        copyDir(currUser.value, currPath.value, newUser, newPath);
+      }
+    } else {
+      copyKey(currUser.value, currPath.value, newUser, newPath, key);
+    }
+  }
+  clearDialog();
+}
+
 function saveClick() {
   saveKey(dialogItem.value["key"].split(".")[1], dialogText.value);
   clearDialog();
@@ -223,10 +279,13 @@ function deleteClick() {
 function clearDialog() {
   dialogText.value = null;
   dialogItem.value = null;
+  copyDialogText.value = null;
+  copyNewDirDialogText.value = null;
   dialog.value = false;
   deleteDialog.value = false;
   newDirDialog.value = false;
   newKeyDialog.value = false;
+  copyDialog.value = false;
 }
 
 function getColor(value, isKey) {
@@ -449,6 +508,44 @@ function colorRowItem(item) {
             ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
           >
           <v-btn color="primary" variant="tonal" @click="newKeyClick">
+            <v-icon>mdi-content-save-edit-outline</v-icon
+            ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="copyDialog" persistent>
+      <v-card prepend-icon="mdi-content-copy" :title="copyDialogTitle">
+        <v-card-title
+          ><v-text-field
+            label="new dir name"
+            variant="outlined"
+            v-model="copyNewDirDialogText"
+            counter
+            auto-grow
+            :disabled="newDirNameDisabled"
+          ></v-text-field>
+
+          <v-text-field
+            label="new dir"
+            variant="outlined"
+            v-model="copyDialogText"
+            counter
+            auto-grow
+            autofocus
+          ></v-text-field
+        ></v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="plain" @click="closeClick">
+            <v-icon>mdi-close-circle-outline </v-icon
+            ><v-tooltip activator="parent">(Esc)</v-tooltip>Close</v-btn
+          >
+          <v-btn color="primary" variant="tonal" @click="copyClick">
             <v-icon>mdi-content-save-edit-outline</v-icon
             ><v-tooltip activator="parent">(Ctrl+Enter)</v-tooltip>Save</v-btn
           >

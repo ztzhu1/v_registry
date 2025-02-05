@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DirRequest } from './v_registry_server_pb';
+import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DirRequest, CopyKeyRequest, CopyDirRequest } from './v_registry_server_pb';
 import { VRegistryServerClient } from './v_registry_server_grpc_web_pb';
 import { items, idIndexMap, currSession, candidateSessions, selected, dialog, dialogText, dialogItem, dialogTitle } from './status'
 
@@ -134,7 +134,44 @@ export function saveKey(key, value) {
 
     CLIENT.saveKey(request, {}, (err, response) => {
         if (err) {
-            console.log(`Unexpected error for saveKey: code = ${err.code}` +
+            alert(`Unexpected error for saveKey: code = ${err.code}` +
+                `, message = "${err.message}"`);
+        } else {
+            console.log(response['u'][0]);
+        }
+        refreshUI()
+    });
+}
+
+export function copyKey(oldUser, oldPath, newUser, newPath, key) {
+    let request = new CopyKeyRequest();
+    request.setOlduser(oldUser);
+    request.setOldpath(oldPath);
+    request.setNewuser(newUser);
+    request.setNewpath(newPath);
+    request.setName(key);
+
+    CLIENT.copyKey(request, {}, (err, response) => {
+        if (err) {
+            alert(`Unexpected error for copyKey: code = ${err.code}` +
+                `, message = "${err.message}"`);
+        } else {
+            console.log(response['u'][0]);
+        }
+        refreshUI()
+    });
+}
+
+export function copyDir(oldUser, oldPath, newUser, newPath) {
+    let request = new CopyDirRequest();
+    request.setOlduser(oldUser);
+    request.setOldpath(oldPath);
+    request.setNewuser(newUser);
+    request.setNewpath(newPath);
+
+    CLIENT.copyDir(request, {}, (err, response) => {
+        if (err) {
+            alert(`Unexpected error for copyDir: code = ${err.code}` +
                 `, message = "${err.message}"`);
         } else {
             console.log(response['u'][0]);
