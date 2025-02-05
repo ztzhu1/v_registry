@@ -168,36 +168,70 @@ function copyClick() {
   let result = copyDialogText.value.split("/");
   result = result.slice(1, result.length);
 
-  let newUser = "";
-  let newPath = "";
-
-  if (result.length == 0) {
-    alert("invalid new path");
-    return;
-  } else if (result.length == 1) {
-    newUser = result[0];
-  } else {
-    [newUser, ...newPath] = result;
-    newPath = newPath.join("/");
-  }
-  if (newUser == "") {
-    alert("invalid new path");
-    return;
-  }
   for (const id of selected.value) {
     const [type, key] = getKey(id).split(".");
-    if (key == "folder") {
+    if (type == "folder") {
+      let newUser = "";
+      let newPath = "";
+      let name = copyNewDirDialogText.value;
+      if (selected.value.length > 1) {
+        name = key;
+      }
+
+      if (result.length == 0) {
+        alert("invalid new path (1)");
+        return;
+      } else if (result.length == 1) {
+        if (result[0] != "") {
+          newUser = result[0];
+          newPath = name;
+        } else {
+          newUser = name;
+        }
+        if (showUsers.value) {
+          newPath = "";
+        }
+      } else {
+        [newUser, ...newPath] = result;
+        newPath = newPath.join("/");
+        newPath = `${newPath}/${name}`;
+      }
+      if (newUser == "") {
+        alert("invalid new path");
+        return;
+      }
       if (showUsers.value) {
         if (newPath != "") {
-          console.log(1)
           alert("invalid new path");
           return;
         }
         copyDir(currUser.value, "", newUser, newPath);
       } else {
-        copyDir(currUser.value, currPath.value, newUser, newPath);
+        let cp = currPath.value;
+        if (cp == "") {
+          cp = key;
+        } else {
+          cp = `${cp}/${key}`;
+        }
+        copyDir(currUser.value, cp, newUser, newPath);
       }
     } else {
+      let newUser = "";
+      let newPath = "";
+
+      if (result.length == 0) {
+        alert("invalid new path");
+        return;
+      } else if (result.length == 1) {
+        newUser = result[0];
+      } else {
+        [newUser, ...newPath] = result;
+        newPath = newPath.join("/");
+      }
+      if (newUser == "") {
+        alert("invalid new path");
+        return;
+      }
       copyKey(currUser.value, currPath.value, newUser, newPath, key);
     }
   }
