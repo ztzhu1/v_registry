@@ -47,3 +47,7 @@ export function noDialog() {
         !copyDialog.value
     );
 }
+
+export function noFocus() {
+    return !pathFocus.value && !dialog.value;
+}

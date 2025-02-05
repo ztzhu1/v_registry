@@ -24,6 +24,7 @@ import {
   copyDialogText,
   copyNewDirDialogText,
   noDialog,
+  noFocus,
 } from "../status";
 import {
   switchAndRefresh,
@@ -44,7 +45,7 @@ onMounted(() => {
     } else if (event.code == "KeyO" && event.ctrlKey) {
       event.preventDefault();
       goBack();
-    } else if (event.code == "KeyN") {
+    } else if (event.code == "KeyN" && noFocus()) {
       event.preventDefault();
       if (event.shiftKey) {
         newDir();
@@ -53,11 +54,12 @@ onMounted(() => {
       }
     } else if (
       (event.code == "KeyD" || event.code == "Delete") &&
-      selected.value.length > 0
+      selected.value.length > 0 &&
+      noFocus()
     ) {
       event.preventDefault();
       deleteItem();
-    } else if (event.code == "KeyC" && selected.value.length > 0) {
+    } else if (event.code == "KeyC" && selected.value.length > 0 && noFocus()) {
       event.preventDefault();
       copyItem();
     }
