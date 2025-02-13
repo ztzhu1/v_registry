@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { useTheme } from "vuetify";
 import {
   currSession,
@@ -25,6 +25,8 @@ import {
   copyNewDirDialogText,
   noDialog,
   noFocus,
+  drawer,
+  group,
 } from "../status";
 import {
   switchAndRefresh,
@@ -67,6 +69,10 @@ onMounted(() => {
 });
 
 const theme = useTheme();
+
+watch(group, () => {
+  drawer.value = false;
+});
 
 function toggleTheme() {
   theme.global.name.value = isDark() ? "light" : "dark";
@@ -169,11 +175,12 @@ function pathUpdate(event) {
   <v-card>
     <v-layout>
       <v-app-bar>
-        <template v-slot:prepend>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-        </template>
+        <v-app-bar-nav-icon
+          variant="text"
+          @click.stop="drawer = !drawer"
+        ></v-app-bar-nav-icon>
 
-        <v-app-bar-title>v-registry </v-app-bar-title>
+        <v-app-bar-title>m-registry </v-app-bar-title>
 
         <v-spacer />
 

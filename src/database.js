@@ -1,16 +1,16 @@
 import { ref } from "vue"
-import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DirRequest, CopyKeyRequest, CopyDirRequest } from './v_registry_server_pb';
+import { RegistryRequest, SaveKeyRequest, DeleteKeyRequest, DirRequest, CopyKeyRequest, CopyDirRequest, StringRequest } from './v_registry_server_pb';
 import { VRegistryServerClient } from './v_registry_server_grpc_web_pb';
-import { items, idIndexMap, currSession, candidateSessions, selected, dialog, dialogText, dialogItem, dialogTitle } from './status'
+import { items, idIndexMap, currSession, candidateSessions, selected, dialog, dialogText, dialogItem, dialogTitle, drawerItems } from './status'
+// import axios from 'axios';
 
 export const CLIENT = new VRegistryServerClient('http://localhost:8080', null, null);
-export const currUser = ref('test_user')
-export const currPath = ref('N121H09')
-export const showUsers = ref(false)
+export const currUser = ref('')
+export const currPath = ref('')
+export const showUsers = ref(true)
 
 switchUser(currUser.value)
 
-console.time('grpc-web');
 
 export function switchUser(user) {
     currUser.value = user;
@@ -47,6 +47,7 @@ export function ls(callback) {
 export function switchAndRefresh(session) {
     console.log(session)
     selected.value = [];
+    refreshDrawerItems(session)
     if (session == null) {
         currPath.value = "";
         currSession.value = `/`;
@@ -248,3 +249,32 @@ export function newDir(folderName) {
     });
 }
 
+export function refreshDrawerItems(session) {
+    let request = new StringRequest();
+    if (session == null) {
+        session = "/"
+    }
+    request.setMessage(session);
+
+    CLIENT.latestSessions(request, {}, (err, response) => {
+        if (err) {
+            console.log(`Unexpected error for datestSessions: code = ${err.code}` +
+                `, message = "${err.message}"`);
+        } else {
+            drawerItems.value = []
+            for (const session of response['u'][0]) {
+                drawerItems.value.push({ 'title': session })
+            }
+        }
+    });
+}
+
+
+// export function getUserIP() {
+//     try {
+//         const response = axios.get('https://api.ipify.org?format=json');
+//         this.userIP = response.data.ip;
+//     } catch (error) {
+//         console.error('Error fetching IP address:', error);
+//     }
+// }

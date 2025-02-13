@@ -623,5 +623,66 @@ proto.protoblog.VRegistryServerPromiseClient.prototype.copyDir =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.protoblog.StringRequest,
+ *   !proto.protoblog.StringListReply>}
+ */
+const methodDescriptor_VRegistryServer_LatestSessions = new grpc.web.MethodDescriptor(
+  '/protoblog.VRegistryServer/LatestSessions',
+  grpc.web.MethodType.UNARY,
+  proto.protoblog.StringRequest,
+  proto.protoblog.StringListReply,
+  /**
+   * @param {!proto.protoblog.StringRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.protoblog.StringListReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.protoblog.StringRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.protoblog.StringListReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.protoblog.StringListReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.protoblog.VRegistryServerClient.prototype.latestSessions =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/protoblog.VRegistryServer/LatestSessions',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_LatestSessions,
+      callback);
+};
+
+
+/**
+ * @param {!proto.protoblog.StringRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.protoblog.StringListReply>}
+ *     Promise that resolves to the response
+ */
+proto.protoblog.VRegistryServerPromiseClient.prototype.latestSessions =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/protoblog.VRegistryServer/LatestSessions',
+      request,
+      metadata || {},
+      methodDescriptor_VRegistryServer_LatestSessions);
+};
+
+
 module.exports = proto.protoblog;
 

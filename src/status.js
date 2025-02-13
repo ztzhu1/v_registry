@@ -1,6 +1,6 @@
 import { ref, shallowRef } from "vue"
 
-export let currSession = ref("/test_user/N121H09")
+export let currSession = ref("/")
 
 export let pathFocus = ref(false);
 export let pathRef = ref();
@@ -38,6 +38,11 @@ export let copyNewDirDialogText = ref(null);
 export let copyNewDirDialog = shallowRef(false);
 export let copyDialogTitle = ref("copy (it will overwrite the old path if exists)");
 export let newDirNameDisabled = ref(true);
+
+export let drawer = ref(false);
+export let group = ref(null);
+
+export let drawerItems = ref([]);
 
 export function noDialog() {
     return (

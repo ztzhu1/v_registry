@@ -29,6 +29,8 @@ import {
   copyNewDirDialogText,
   newDirNameDisabled,
   noDialog,
+  drawer,
+  drawerItems,
 } from "../status";
 import {
   currUser,
@@ -107,11 +109,11 @@ function isDark() {
 }
 
 const headers = [
-  { title: "key", key: "key", align: "center" },
-  { title: "value", key: "value", align: "center" },
+  { title: "key", key: "key", align: "left" },
+  { title: "value", key: "value", align: "left" },
 ];
 
-switchAndRefresh("/test_user");
+switchAndRefresh(null);
 
 function rowClick(event, row) {
   if (event.detail != 1) {
@@ -145,7 +147,7 @@ function rowDoubleClick(event, row) {
 
   let [type, name] = row.internalItem.raw["key"].split(".");
   selected.value = [];
-  search.value = ""
+  search.value = "";
   if (type.split(".")[0] == "folder") {
     if (currSession.value == "/") {
       switchAndRefresh(`${currSession.value}${name}`);
@@ -155,6 +157,15 @@ function rowDoubleClick(event, row) {
   } else {
     refreshUI(name);
   }
+}
+
+function drawerClick(index) {
+  let session = drawerItems.value[index]["title"];
+  if (session == "" || session == "/") {
+    session = null;
+  }
+  switchAndRefresh(session);
+  drawer.value = false;
 }
 
 function getKey(id) {
@@ -587,6 +598,20 @@ function colorRowItem(item) {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-navigation-drawer v-model="drawer" temporary>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in drawerItems"
+          :key="index"
+          @click="drawerClick(index)"
+          align="center"
+          justify="center"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </v-main>
 </template>
 
