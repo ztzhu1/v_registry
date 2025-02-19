@@ -5,6 +5,7 @@ export let currSession = ref("/")
 export let pathFocus = ref(false);
 export let pathRef = ref();
 export let searchFocus = ref(false);
+export let search = ref("");
 
 export let selected = ref([]);
 export let items = ref([]);

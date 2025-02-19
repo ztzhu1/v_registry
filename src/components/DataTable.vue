@@ -5,6 +5,7 @@ import {
   currSession,
   pathRef,
   pathFocus,
+  search,
   searchFocus,
   items,
   idIndexMap,
@@ -48,7 +49,6 @@ import {
 
 const theme = useTheme();
 let vimMode = "normal";
-const search = ref("");
 let searchRef = ref();
 let keyDialogRef = ref();
 

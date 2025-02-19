@@ -27,6 +27,7 @@ import {
   noFocus,
   drawer,
   group,
+  search,
 } from "../status";
 import {
   switchAndRefresh,
@@ -90,6 +91,9 @@ function isDark() {
 }
 
 function goBack() {
+  if (search.value) {
+    search.value = "";
+  }
   if (currSession.value == "/") {
     return;
   }
