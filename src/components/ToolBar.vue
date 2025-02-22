@@ -261,7 +261,7 @@ function pathUpdate(event) {
   <v-dialog v-model="moreDialog" persistent>
     <v-card>
       <v-card-title align="center"
-        >BSD 2-Clause License. Copyright &copy; 2025 SQCG & ztzhu.</v-card-title
+        >BSD 2-Clause License. Copyright &copy; 2025 ztzhu.</v-card-title
       >
 
       <v-divider></v-divider>
